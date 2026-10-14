@@ -1,0 +1,180 @@
+/*
+ * Design tokens — see DESIGN.md.
+ *
+ * The page is a printed poster for the current weather: one flat field colour and a small set
+ * of inks, chosen per condition via `data-sky` on <html>. Every component reads these
+ * semantic names, so changing the sky re-inks the whole page. Primary ink is ≥8:1 on every field and secondary ink ≥7:1.
+ */
+:root {
+    /* Type: one variable grotesque with weight and width axes. */
+    --font-ui: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
+    --font-cond: var(--font-ui);
+    /* The small end of the scale is deliberately generous: these sizes carry secondary text
+       on saturated fields, where a 12–13px grey reads as noise. Nothing renders below 14px. */
+    --fs-12: 0.875rem;
+    --fs-13: 0.9375rem;
+    --fs-15: 1rem;
+    --fs-18: 1.125rem;
+    --fs-22: 1.375rem;
+    --fs-28: 1.75rem;
+    --fs-40: 2.5rem;
+    --fs-display: clamp(8.5rem, 3rem + 22vw, 26rem);
+
+    /* Space (4px base) */
+    --sp-1: 0.25rem;
+    --sp-2: 0.5rem;
+    --sp-3: 0.75rem;
+    --sp-4: 1rem;
+    --sp-5: 1.25rem;
+    --sp-6: 1.5rem;
+    --sp-8: 2rem;
+    --sp-10: 2.5rem;
+    --sp-12: 3rem;
+    --sp-16: 4rem;
+
+    /* Shape: print has no rounded corners, except controls get a hint for touch affordance. */
+    --r-control: 2px;
+    --r-panel: 0;
+    --rule-heavy: 2px;
+
+    /* Temperature ramp (°C anchors) — data only */
+    --t-m10: #3d55a8;
+    --t-0: #4f8fc9;
+    --t-10: #3e9e8c;
+    --t-18: #d9a521;
+    --t-25: #e07a2e;
+    --t-32: #c2402a;
+    --t-38: #8b1e2c;
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 180ms;
+    --field-dur: 900ms;
+
+    --shell-max: 1320px;
+    --gutter: 1.25rem;
+    --tap: 44px;
+
+    /* Default inks (overridden per sky below): clear day. */
+    --paper: #f2b83b;
+    --ink: #1a1712;
+    --ink-2: #3d3119;
+    --precip: #1b4c9a;
+    --warn: #8e1b10;
+    color-scheme: light;
+
+    /* Derived from the inks above — never set directly. */
+    --ink-3: var(--ink-2);
+    --paper-2: color-mix(in srgb, var(--ink) 8%, var(--paper));
+    --rule: color-mix(in srgb, var(--ink) 28%, var(--paper));
+    --rule-strong: color-mix(in srgb, var(--ink) 55%, var(--paper));
+    --on-ink: var(--paper);
+    --precip-soft: color-mix(in srgb, var(--precip) 20%, transparent);
+    --focus: var(--ink);
+    --shadow-pop: 0 10px 30px -10px rgb(0 0 0 / 0.35);
+    --popover: color-mix(in srgb, var(--paper) 94%, var(--ink));
+}
+
+@media (min-width: 720px) {
+    :root {
+        --gutter: 2.5rem;
+    }
+}
+
+/* Light fields: dark ink */
+:root[data-sky='clear-day'] {
+    --paper: #f2b83b;
+    --ink: #1a1712;
+    --ink-2: #3d3119;
+    --precip: #1b4c9a;
+    --warn: #8e1b10;
+    color-scheme: light;
+}
+:root[data-sky='cloudy-day'] {
+    --paper: #c5ced5;
+    --ink: #182027;
+    --ink-2: #343c43;
+    --precip: #1a519b;
+    --warn: #9a2416;
+    color-scheme: light;
+}
+:root[data-sky='snow-day'] {
+    --paper: #e2eaf0;
+    --ink: #13253a;
+    --ink-2: #3e4e60;
+    --precip: #1a519b;
+    --warn: #9a2416;
+    color-scheme: light;
+}
+:root[data-sky='mist-day'] {
+    --paper: #d3cfc5;
+    --ink: #211f1b;
+    --ink-2: #3d3b36;
+    --precip: #1f5299;
+    --warn: #982818;
+    color-scheme: light;
+}
+
+/* Dark fields: light ink */
+:root[data-sky='clear-night'] {
+    --paper: #15223f;
+    --ink: #f3eee4;
+    --ink-2: #b9b9b9;
+    --precip: #93bbff;
+    --warn: #ffb08a;
+    color-scheme: dark;
+}
+:root[data-sky='cloudy-night'] {
+    --paper: #222a33;
+    --ink: #e9edf0;
+    --ink-2: #b5babf;
+    --precip: #93bbff;
+    --warn: #ff9f80;
+    color-scheme: dark;
+}
+:root[data-sky='rain-day'] {
+    --paper: #224b66;
+    --ink: #ffffff;
+    --ink-2: #dce2e7;
+    --precip: #c4e2ff;
+    --warn: #ffc6ae;
+    color-scheme: dark;
+}
+:root[data-sky='rain-night'] {
+    --paper: #122130;
+    --ink: #e6eef4;
+    --ink-2: #afb9c1;
+    --precip: #8ec5ff;
+    --warn: #ffa98a;
+    color-scheme: dark;
+}
+:root[data-sky='storm'] {
+    --paper: #2c2340;
+    --ink: #f6f2fb;
+    --ink-2: #c1bcca;
+    --precip: #bcc9ff;
+    --warn: #ffd45e;
+    color-scheme: dark;
+}
+:root[data-sky='snow-night'] {
+    --paper: #1b293c;
+    --ink: #eaf1f7;
+    --ink-2: #b4bdc6;
+    --precip: #93bbff;
+    --warn: #ffaa8c;
+    color-scheme: dark;
+}
+:root[data-sky='mist-night'] {
+    --paper: #25282b;
+    --ink: #eae8e3;
+    --ink-2: #b7b6b3;
+    --precip: #9dbff5;
+    --warn: #ffa588;
+    color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur: 0.01ms;
+        --field-dur: 0.01ms;
+    }
+}

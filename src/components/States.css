@@ -1,0 +1,210 @@
+/* ---------- Welcome / setup / error ---------- */
+.state {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-4);
+    max-width: 560px;
+    padding-top: var(--sp-10);
+}
+
+.state__title {
+    font-family: var(--font-cond);
+    font-stretch: 87.5%;
+    font-size: var(--fs-40);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+.state__title--small {
+    font-size: var(--fs-28);
+}
+
+.state__text {
+    max-width: 60ch;
+    color: var(--ink-2);
+}
+.state__text--small {
+    font-size: var(--fs-13);
+}
+
+.state__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    margin-top: var(--sp-2);
+}
+
+.state__code {
+    max-width: 100%;
+    margin: 0;
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-control);
+    background: var(--paper-2);
+    overflow-x: auto;
+    font-size: var(--fs-13);
+}
+
+code {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 0.92em;
+}
+
+/* Quick-pick cities: a plain list of rows separated by hairlines. */
+.picks {
+    align-self: stretch;
+    margin-top: var(--sp-2);
+    border-top: 1px solid var(--rule);
+}
+.picks li {
+    border-bottom: 1px solid var(--rule);
+}
+.picks__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    width: 100%;
+    min-height: var(--tap);
+    padding: var(--sp-3) var(--sp-2);
+    border: 0;
+    background: none;
+    text-align: left;
+    transition: background-color var(--dur) var(--ease);
+}
+.picks__row:hover {
+    background: var(--paper-2);
+}
+.picks__name {
+    font-weight: 500;
+}
+.picks__meta {
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+    text-align: right;
+}
+
+/* ---------- Banner ---------- */
+.banner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-4);
+    border-radius: var(--r-control);
+    background: var(--paper-2);
+    color: var(--ink);
+}
+.banner__icon {
+    width: 18px;
+    height: 18px;
+    color: var(--warn);
+    flex-shrink: 0;
+}
+.banner__text {
+    flex: 1;
+    min-width: 0;
+    padding: var(--sp-2) 0;
+}
+.banner__action {
+    flex-shrink: 0;
+    font-weight: 500;
+}
+.banner__close {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: var(--tap);
+    height: var(--tap);
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-control);
+    background: transparent;
+    color: var(--ink-2);
+    transition:
+        color var(--dur) var(--ease),
+        background-color var(--dur) var(--ease);
+}
+.banner__close:hover {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.banner__close svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    min-width: 0;
+}
+.skeleton--hero {
+    grid-area: hero;
+}
+.skeleton--hourly {
+    grid-area: hourly;
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--rule);
+}
+.skeleton--daily {
+    grid-area: daily;
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--rule);
+}
+
+.sk {
+    display: block;
+    border-radius: var(--r-control);
+    background: var(--paper-2);
+    animation: sk-pulse 1.8s ease-in-out infinite;
+}
+.sk--panel {
+    height: 300px;
+    border-radius: var(--r-panel);
+}
+.sk--title {
+    width: 9rem;
+    height: 14px;
+}
+.sk--chart {
+    height: 140px;
+}
+.sk-row {
+    display: block;
+    padding: var(--sp-2) 0;
+    border-bottom: 1px solid var(--rule);
+}
+.sk--line {
+    height: 14px;
+    width: 100%;
+}
+
+@media (min-width: 720px) {
+    .dashboard.skeleton-grid {
+        grid-template-areas:
+            'hero hero'
+            'hourly hourly'
+            'daily daily';
+    }
+}
+@media (min-width: 1080px) {
+    .dashboard.skeleton-grid {
+        grid-template-areas:
+            'hero daily'
+            'hourly daily';
+    }
+}
+
+@keyframes sk-pulse {
+    50% {
+        opacity: 0.55;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sk {
+        animation: none;
+    }
+}

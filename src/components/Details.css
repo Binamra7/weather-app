@@ -1,0 +1,208 @@
+/* ---------- Conditions now ---------- */
+.metrics {
+    container-type: inline-size;
+}
+
+.metrics__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: var(--sp-8);
+}
+@container (min-width: 520px) {
+    .metrics__list {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.metric {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'label value'
+        'note  value';
+    align-items: center;
+    column-gap: var(--sp-3);
+    min-height: 60px;
+    padding: var(--sp-2) 0;
+    border-top: 1px solid var(--rule);
+}
+
+.metric__label {
+    grid-area: label;
+    align-self: end;
+    font-size: var(--fs-15);
+    color: var(--ink-2);
+}
+
+.metric__note {
+    grid-area: note;
+    align-self: start;
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+    line-height: 1.35;
+}
+
+.metric__value {
+    grid-area: value;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    white-space: nowrap;
+}
+.metric__num {
+    font-family: var(--font-cond);
+    font-stretch: 87.5%;
+    font-size: var(--fs-22);
+    font-weight: 500;
+    line-height: 1.1;
+}
+.metric__unit {
+    align-self: flex-end;
+    padding-bottom: 2px;
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}
+.metric__arrow {
+    flex-shrink: 0;
+    margin-right: var(--sp-1);
+    color: var(--ink);
+}
+
+/* ---------- Daylight ---------- */
+.sun__chart {
+    position: relative;
+    display: block;
+    padding-top: 1.25rem;
+}
+
+.sun__track {
+    position: relative;
+    display: block;
+    height: 6px;
+    background: color-mix(in srgb, var(--ink) 16%, transparent);
+}
+.sun__day {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: var(--ink);
+}
+.sun__now {
+    position: absolute;
+    top: -7px;
+    bottom: -7px;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--warn);
+    /* A paper-coloured keyline keeps the tick legible where it crosses the ink daylight bar. */
+    box-shadow: 0 0 0 2px var(--paper);
+}
+.sun__now-label {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    font-size: var(--fs-12);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--warn);
+}
+
+.sun__axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--sp-2);
+    font-size: var(--fs-12);
+    color: var(--ink-2);
+}
+
+.sun__times {
+    display: flex;
+    gap: var(--sp-8);
+    margin-top: var(--sp-4);
+}
+.sun__times dt {
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}
+.sun__times dd {
+    font-family: var(--font-cond);
+    font-stretch: 87.5%;
+    font-size: var(--fs-22);
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.sun__status {
+    margin-top: var(--sp-2);
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}
+
+/* ---------- Air quality ---------- */
+.air__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+}
+.air__label {
+    font-size: var(--fs-22);
+    font-weight: 600;
+    line-height: 1.2;
+}
+.air__index {
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}
+
+.air__scale {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+    max-width: 20rem;
+    margin-top: var(--sp-3);
+}
+.air__scale span {
+    height: 4px;
+    /* Inactive steps are ink tints so the scale reads on every field colour. */
+    background: color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.air__scale span.is-current {
+    height: 8px;
+    margin-top: -2px;
+    box-shadow: 0 0 0 1px var(--ink);
+}
+
+.air__note {
+    margin-top: var(--sp-3);
+    color: var(--ink-2);
+}
+
+.air__components {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    justify-content: start;
+    column-gap: var(--sp-5);
+    row-gap: var(--sp-1);
+    margin-top: var(--sp-4);
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--rule);
+}
+.air__components div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-1);
+}
+.air__components dt {
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}
+.air__components dd {
+    font-weight: 500;
+    color: var(--ink);
+}
+
+@media (max-width: 360px) {
+    .air__components {
+        grid-template-columns: repeat(2, auto);
+    }
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Skycast</title>
+  <defs><clipPath id="tile"><rect width="64" height="64" rx="14"/></clipPath></defs>
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="#F2B83B"/>
+    <circle cx="64" cy="0" r="30" fill="#F1952C"/>
+    <circle cx="27" cy="34" r="13" fill="none" stroke="#1A1712" stroke-width="8.5"/>
+  </g>
+</svg>

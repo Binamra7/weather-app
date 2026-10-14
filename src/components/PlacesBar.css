@@ -1,0 +1,97 @@
+.places {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--sp-8);
+    font-size: var(--fs-15);
+}
+
+.places__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--sp-3);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.places__label {
+    color: var(--ink-2);
+}
+
+.places__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+}
+
+.places__item {
+    display: inline-flex;
+    align-items: center;
+}
+.places__item + .places__item::before {
+    content: '·' / '';
+    padding: 0 var(--sp-2);
+    color: var(--ink-3);
+}
+/* Saved names are already separated by their remove (×) buttons; a middot as well is noise. */
+.places__item:has(.places__remove) + .places__item::before {
+    content: none;
+}
+.places__item:has(.places__remove) + .places__item {
+    margin-left: var(--sp-3);
+}
+
+.places__place {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 2px;
+    border: 0;
+    border-radius: var(--r-control);
+    background: none;
+    color: var(--ink);
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--rule-strong);
+    transition: text-decoration-color var(--dur) var(--ease);
+}
+.places__place:hover {
+    text-decoration-color: currentColor;
+}
+.places__place.is-current {
+    font-weight: 600;
+    text-decoration: none;
+    cursor: default;
+}
+
+.places__remove {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-control);
+    background: none;
+    color: var(--ink-3);
+    transition:
+        color var(--dur) var(--ease),
+        background-color var(--dur) var(--ease);
+}
+.places__remove:hover {
+    color: var(--ink);
+    background: var(--paper-2);
+}
+.places__remove svg {
+    width: 12px;
+    height: 12px;
+}
+
+.places__clear {
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}

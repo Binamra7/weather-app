@@ -1,0 +1,84 @@
+.wi {
+    display: block;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+/* Motion is barely there: the glyph should read as a symbol first. */
+.wi--animated .wi-rays {
+    transform-box: view-box;
+    animation: wi-spin 60s linear infinite;
+}
+.wi--animated .wi-drop {
+    animation: wi-fall 1.4s cubic-bezier(0.45, 0, 0.8, 0.6) infinite;
+}
+.wi--animated .wi-flake {
+    animation: wi-drift 3.2s ease-in-out infinite;
+}
+.wi--animated .wi-bolt {
+    animation: wi-blink 7s ease-in-out infinite;
+}
+.wi--animated .wi-band,
+.wi--animated .wi-gust {
+    animation: wi-slide 7s ease-in-out infinite alternate;
+}
+.wi--animated .wi-band--2,
+.wi--animated .wi-gust--2 {
+    animation-direction: alternate-reverse;
+}
+
+@keyframes wi-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@keyframes wi-fall {
+    0% {
+        transform: translateY(-1px);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(2.5px);
+        opacity: 0;
+    }
+}
+@keyframes wi-drift {
+    0%,
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(0.6px, 1.2px);
+        opacity: 0.7;
+    }
+}
+@keyframes wi-blink {
+    0%,
+    90%,
+    94%,
+    100% {
+        opacity: 1;
+    }
+    92%,
+    96% {
+        opacity: 0.2;
+    }
+}
+@keyframes wi-slide {
+    from {
+        transform: translateX(-0.6px);
+    }
+    to {
+        transform: translateX(0.8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wi * {
+        animation: none !important;
+    }
+}

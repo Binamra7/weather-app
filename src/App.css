@@ -1,0 +1,295 @@
+.app {
+    position: relative;
+    min-height: 100dvh;
+}
+
+.shell {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    max-width: var(--shell-max);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: max(var(--sp-4), env(safe-area-inset-top)) var(--gutter) max(var(--sp-6), env(safe-area-inset-bottom));
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'brand search actions';
+    align-items: center;
+    gap: var(--sp-6);
+}
+
+.brand {
+    grid-area: brand;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-height: var(--tap);
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-ui);
+    font-size: 1.375rem;
+    font-weight: 800;
+    font-stretch: 125%;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    border-radius: var(--r-control);
+}
+.brand__deg {
+    /* Cancel the flex gap so the degree sits on the wordmark like a superscript. */
+    margin-left: calc(-1 * var(--sp-2) - 0.02em);
+    font-weight: 500;
+}
+
+.topbar__search {
+    grid-area: search;
+    min-width: 0;
+}
+
+.topbar__actions {
+    grid-area: actions;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+}
+
+.topbar__locate {
+    min-height: var(--tap);
+    font-size: var(--fs-15);
+    white-space: nowrap;
+}
+.topbar__locate svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: var(--ink-2);
+}
+
+/* Text toggle: "°C / °F", "12h / 24h". Active = ink, semibold, underlined. */
+.toggle {
+    display: inline-flex;
+    align-items: center;
+}
+.toggle__item {
+    display: inline-flex;
+    align-items: center;
+}
+.toggle__sep {
+    padding: 0 2px;
+    color: var(--ink-3);
+}
+.toggle__btn {
+    min-width: 32px;
+    min-height: var(--tap);
+    padding: 0 var(--sp-1);
+    border: 0;
+    border-radius: var(--r-control);
+    background: none;
+    color: var(--ink-2);
+    font-size: var(--fs-15);
+    font-weight: 400;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition:
+        color var(--dur) var(--ease),
+        text-decoration-color var(--dur) var(--ease);
+}
+.toggle__btn:hover {
+    color: var(--ink);
+    text-decoration-color: var(--rule-strong);
+}
+.toggle__btn[aria-pressed='true'] {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration-color: currentColor;
+}
+.toggle--small .toggle__btn {
+    font-size: var(--fs-13);
+}
+
+/* ---------- Progress ---------- */
+.progress {
+    position: fixed;
+    z-index: 50;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    overflow: hidden;
+}
+.progress::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 30%;
+    background: var(--ink);
+    animation: progress 1.2s var(--ease) infinite;
+}
+@keyframes progress {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(340%);
+    }
+}
+
+.messages:empty {
+    display: none;
+}
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+main {
+    flex: 1;
+}
+
+.app__note {
+    max-width: 65ch;
+    color: var(--ink-2);
+}
+
+/* ---------- Dashboard grid ----------
+ * The poster spans the full measure, then the 36-hour chart, then two-up rows on a 12-column
+ * grid (daily | conditions, daylight | air). The column wrappers are `display: contents`, so
+ * each section is placed by grid area.
+ */
+.dashboard {
+    display: grid;
+    gap: var(--sp-12) var(--sp-6);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'hero' 'hourly' 'daily' 'metrics' 'sun' 'air';
+    align-items: start;
+    transition: opacity var(--dur) var(--ease);
+}
+.dashboard.is-updating {
+    opacity: 0.6;
+}
+.dashboard__col {
+    display: contents;
+}
+.dashboard__col > * {
+    min-width: 0;
+}
+
+.area-hero {
+    grid-area: hero;
+}
+.area-hourly {
+    grid-area: hourly;
+}
+.area-daily {
+    grid-area: daily;
+}
+.area-metrics {
+    grid-area: metrics;
+}
+.area-sun {
+    grid-area: sun;
+}
+.area-air {
+    grid-area: air;
+}
+
+@media (min-width: 900px) {
+    .dashboard {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-template-areas: none;
+    }
+    .area-hero {
+        grid-area: 1 / 1 / 2 / -1;
+    }
+    .area-hourly {
+        grid-area: 2 / 1 / 3 / -1;
+    }
+    .area-daily {
+        grid-area: 3 / 1 / 4 / 7;
+    }
+    .area-metrics {
+        grid-area: 3 / 7 / 4 / 13;
+    }
+    .area-sun {
+        grid-area: 4 / 1 / 5 / 7;
+    }
+    .area-air {
+        grid-area: 4 / 7 / 5 / 13;
+    }
+    /* Without a forecast there is no daily table: conditions take the full row. */
+    .dashboard:not(:has(.area-daily)) .area-metrics {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ---------- Footer ---------- */
+.footer {
+    margin-top: var(--sp-8);
+    padding-top: var(--sp-3);
+    border-top: var(--rule-heavy) solid var(--ink);
+    font-size: var(--fs-13);
+    color: var(--ink-2);
+}
+.footer a {
+    color: inherit;
+    text-decoration-color: var(--rule-strong);
+}
+.footer a:hover {
+    text-decoration-color: currentColor;
+}
+
+/* ---------- Narrow screens ---------- */
+@media (max-width: 899px) {
+    .topbar {
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            'brand actions'
+            'search search';
+        gap: var(--sp-2) var(--sp-4);
+    }
+    .topbar__actions {
+        justify-self: end;
+    }
+}
+
+@media (max-width: 479px) {
+    .topbar__actions {
+        gap: var(--sp-3);
+    }
+    .toggle__btn {
+        min-width: 0;
+    }
+    .topbar__locate {
+        min-width: var(--tap);
+        justify-content: center;
+        text-decoration: none;
+    }
+    .topbar__locate-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress::after {
+        width: 100%;
+        animation: progress-pulse 2s linear infinite;
+    }
+}
+@keyframes progress-pulse {
+    50% {
+        opacity: 0.35;
+    }
+}

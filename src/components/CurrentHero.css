@@ -1,0 +1,176 @@
+/*
+ * Poster grid. Mobile: place, reading, facts stacked. From 900px: a 12-column grid where the
+ * temperature takes columns 1–8 across both rows and the place + facts take 9–12.
+ */
+.poster {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'place' 'reading' 'facts';
+    row-gap: var(--sp-6);
+    padding-bottom: var(--sp-8);
+}
+
+@media (min-width: 900px) {
+    .poster {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+            'reading reading reading reading reading reading reading reading place place place place'
+            'reading reading reading reading reading reading reading reading facts facts facts facts';
+        column-gap: var(--sp-6);
+        row-gap: var(--sp-8);
+        padding-bottom: var(--sp-12);
+    }
+}
+
+/* ---------- Place ---------- */
+.poster__place {
+    grid-area: place;
+    min-width: 0;
+    padding-top: var(--sp-3);
+    border-top: var(--rule-heavy) solid var(--ink);
+}
+
+.poster__name {
+    font-size: clamp(2rem, 1.4rem + 1.6vw, 2.75rem);
+    font-weight: 800;
+    font-stretch: 112%;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+}
+
+.poster__region {
+    margin-top: var(--sp-2);
+    font-size: var(--fs-18);
+    font-weight: 500;
+}
+
+.poster__time {
+    margin-top: var(--sp-3);
+    font-size: var(--fs-18);
+    line-height: 1.4;
+    color: var(--ink-2);
+}
+
+/* ---------- Reading: the type is the image ---------- */
+.poster__reading {
+    grid-area: reading;
+    min-width: 0;
+    align-self: start;
+}
+
+.poster__temp {
+    display: flex;
+    align-items: flex-start;
+    font-size: var(--fs-display);
+    font-weight: 300;
+    font-stretch: 92%;
+    line-height: 0.78;
+    letter-spacing: -0.065em;
+    /* Optical: pull the numerals onto the grid's left edge. */
+    margin-left: -0.06em;
+    padding-top: 0.08em;
+}
+
+.poster__deg {
+    font-size: 0.5em;
+    font-weight: 300;
+    line-height: 1;
+    margin-left: 0.04em;
+    letter-spacing: 0;
+}
+
+.poster__condition {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-top: var(--sp-6);
+    font-size: clamp(1.625rem, 1.2rem + 1.4vw, 2.5rem);
+    font-weight: 600;
+    font-stretch: 100%;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+}
+
+.poster__icon {
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0;
+}
+
+.poster__headline {
+    max-width: 30ch;
+    margin-top: var(--sp-3);
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.3;
+    text-wrap: pretty;
+}
+
+/* ---------- Facts column ---------- */
+.poster__facts {
+    grid-area: facts;
+    min-width: 0;
+    align-self: end;
+}
+
+.facts > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--sp-4);
+    padding: var(--sp-2) 0;
+    border-top: 1px solid var(--rule);
+}
+.facts > div:last-child {
+    border-bottom: 1px solid var(--rule);
+}
+.facts dt {
+    font-size: var(--fs-18);
+    color: var(--ink-2);
+}
+.facts dd {
+    font-size: var(--fs-22);
+    font-weight: 600;
+    font-stretch: 87.5%;
+}
+
+.poster__notes {
+    display: grid;
+    gap: var(--sp-2);
+    margin-top: var(--sp-4);
+}
+.poster__note {
+    display: flex;
+    gap: var(--sp-2);
+    font-size: var(--fs-18);
+    line-height: 1.35;
+}
+.poster__note svg {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    color: var(--warn);
+}
+
+.poster__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-5);
+    margin-top: var(--sp-5);
+    font-size: var(--fs-18);
+}
+.poster__actions .link-btn {
+    min-height: var(--tap);
+    font-weight: 600;
+}
+.poster__actions svg {
+    width: 16px;
+    height: 16px;
+}
+.poster__updated {
+    color: var(--ink-2);
+}

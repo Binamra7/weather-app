@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <!-- Updated at runtime to the current sky's field colour. -->
+        <meta name="theme-color" content="#f2b83b" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta
+            name="description"
+            content="Current conditions, hourly and 5-day forecasts, air quality and sun times for any city."
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <title>Skycast — Weather</title>
+        <script>
+            // Pick the starting field colour before first paint (App takes over once data loads).
+            document.documentElement.dataset.sky = (h => (h >= 6 && h < 18 ? 'clear-day' : 'clear-night'))(
+                new Date().getHours()
+            );
+        </script>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

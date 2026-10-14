@@ -1,0 +1,184 @@
+/* ---------- Hourly meteogram ---------- */
+.hourly__scroller {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+}
+.hourly__scroller:focus-visible {
+    outline-offset: -2px;
+}
+
+.mg {
+    display: block;
+    overflow: visible;
+}
+.mg text {
+    font-family: var(--font-cond);
+    font-stretch: 87.5%;
+    font-variant-numeric: tabular-nums;
+    /* Knock lines out behind labels; the halo matches the ground under it. */
+    paint-order: stroke;
+    stroke: var(--paper);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+}
+.mg text.is-night {
+    stroke: var(--paper-2);
+}
+
+.mg__night {
+    fill: var(--paper-2);
+}
+.mg__day-rule {
+    stroke: var(--rule);
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+.mg__now {
+    stroke: var(--warn);
+    stroke-width: 1.5;
+}
+
+.mg__line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+.mg__dot {
+    stroke: var(--ink);
+    stroke-width: 1;
+}
+.mg__temp {
+    font-size: var(--fs-15);
+    font-weight: 500;
+    fill: var(--ink);
+}
+.mg__temp.is-extreme {
+    font-weight: 600;
+}
+
+.mg__baseline {
+    stroke: var(--rule);
+    stroke-width: 1;
+}
+.mg__bar {
+    fill: var(--precip);
+    fill-opacity: 0.85;
+}
+.mg__pop {
+    font-size: var(--fs-12);
+    font-weight: 500;
+    fill: var(--precip);
+}
+.mg__quiet {
+    font-family: var(--font-ui);
+    font-size: var(--fs-13);
+    fill: var(--ink-2);
+}
+
+.mg__glyph {
+    color: var(--ink-2);
+}
+
+.mg__time {
+    font-size: var(--fs-13);
+    fill: var(--ink-2);
+}
+.mg__time.is-now {
+    font-weight: 600;
+    fill: var(--ink);
+}
+.mg__weekday {
+    font-size: var(--fs-12);
+    fill: var(--ink-2);
+}
+
+/* ---------- Daily table ---------- */
+.daily__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+}
+
+.daily__row > * {
+    height: 52px;
+    padding: 0 var(--sp-2);
+    border-top: 1px solid var(--rule);
+    vertical-align: middle;
+}
+.daily__row:first-child > * {
+    border-top: 0;
+}
+.daily__row > :first-child {
+    padding-left: 0;
+}
+.daily__row > :last-child {
+    padding-right: 0;
+}
+
+.daily__day {
+    width: 5rem;
+    font-size: var(--fs-18);
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.daily__cond {
+    width: calc(28px + var(--sp-4));
+    color: var(--ink-2);
+}
+
+.daily__pop {
+    width: 3.5rem;
+    font-size: var(--fs-15);
+    font-weight: 600;
+    color: var(--precip);
+    text-align: right;
+}
+
+.daily__lo,
+.daily__hi {
+    width: 3rem;
+    font-family: var(--font-cond);
+    font-stretch: 87.5%;
+    font-size: var(--fs-22);
+    text-align: right;
+}
+.daily__lo {
+    color: var(--ink-2);
+}
+.daily__hi {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.daily__track {
+    position: relative;
+    display: block;
+    height: 6px;
+    min-width: 3rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--ink) 16%, transparent);
+}
+.daily__fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+}
+
+@media (max-width: 380px) {
+    .daily__row > * {
+        padding: 0 var(--sp-1);
+    }
+    .daily__day {
+        width: 3.25rem;
+    }
+    .daily__pop {
+        width: 2.5rem;
+    }
+}
