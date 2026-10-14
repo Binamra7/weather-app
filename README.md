@@ -1,68 +1,117 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Skycast — Weather
 
-## Available Scripts
+A fast, client-side weather app built with React, TypeScript and Vite, powered by the [OpenWeather](https://openweathermap.org/) free API. Search any city and the page prints itself as a poster in the colours of that sky: current conditions, a 36-hour forecast, a 5-day outlook, air quality and daylight, all in the location's local time.
 
-In the project directory, you can run:
+There is **no backend**: the browser calls OpenWeather directly.
 
-### `npm start`
+![Skycast on three phones: sunny Lisbon, rainy New York and clear-night Seoul](docs/screenshots/00-cover-phones.png)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Screenshots
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+All screenshots use live OpenWeather data captured on 14 October 2026.
 
-### `npm test`
+|                                                                                     |                                                                                     |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| ![Sunny Lisbon on desktop](docs/screenshots/01-desktop-sunny-lisbon.png)            | ![Clear night in Seoul on desktop](docs/screenshots/02-desktop-night-seoul.png)     |
+| ![Heavy rain in New York on desktop](docs/screenshots/03-desktop-rain-new-york.png) | ![City search with suggestions](docs/screenshots/09-desktop-search-suggestions.png) |
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Six cities, six skies, six posters](docs/screenshots/10-skies-grid.png)
 
-### `npm run build`
+| 36-hour meteogram                                                  | 6-day forecast                                                         |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| ![36-hour meteogram](docs/screenshots/07-detail-36-hour-chart.png) | ![6-day forecast table](docs/screenshots/08-detail-6-day-forecast.png) |
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+There is also a [full-page desktop capture](docs/screenshots/04-desktop-full-page.png), a [tablet view](docs/screenshots/05-tablet-overcast-london.png), and individual phone screens for [Lisbon](docs/screenshots/06a-phone-sunny-lisbon.png), [New York](docs/screenshots/06b-phone-rain-new-york.png) and [Seoul](docs/screenshots/06c-phone-night-seoul.png).
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **City search** with debounced suggestions (Geocoding API), full keyboard support (↑/↓, Enter, Esc), and Enter-to-search for free text such as `Paris, FR`.
+- **Current conditions**: temperature, feels-like, today's high/low, description, wind speed/direction/gusts, humidity and dew point, visibility, pressure, cloud cover and precipitation.
+- **Forecasts**: a 36-hour meteogram in 3-hour steps (temperature curve, precipitation-chance bars, shaded night, condition changes), and a 5–6 day table with range bars on a shared scale.
+- **Daylight** as a 24-hour bar with sunrise, sunset and remaining daylight; **air quality** (AQI 1–5 with PM2.5, PM10, O₃, NO₂).
+- **Weather visuals**: each forecast is printed as a poster in that sky's colours (11 condition × day/night palettes), with the temperature set at poster scale and flat overprinted weather marks (sun or moon disc, cloud shapes, rain hatching, snow, fog, lightning). Weather icons are drawn line glyphs. Everything is local; there are no external image dependencies.
+- **Highlights** derived from real data, e.g. “Rain likely around 9 PM (80% chance)”, strong gusts, wind chill and poor air.
+- **Personalisation (localStorage)**: °C/°F, 12/24-hour time, favorites, recent searches, and the last viewed place restored on load.
+- **Current location**, only when you press the location button. Permission is never requested automatically, and denial is handled gracefully.
+- **Resilient states**: weather-shaped skeletons, previous data kept on screen during and after a failed search, clear messages for unknown cities, offline/network errors, rate limits and invalid keys, and partial results if the forecast or air-quality call fails.
+- **Accessibility**: labelled controls, ARIA combobox search, labelled weather icons, visible focus rings, ≥44px touch targets, text contrast of at least 7:1 for secondary text on every sky palette, and `prefers-reduced-motion` support.
 
-### `npm run eject`
+## Getting started
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Requirements: Node.js 20.19+ (or 22.12+) and npm.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install
+cp .env.example .env.local   # then add your key (see below)
+npm run dev                  # http://localhost:3000
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### API key
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. Create a free account and key at <https://home.openweathermap.org/api_keys>. New keys can take up to a couple of hours to activate.
+2. Put it in `.env.local` (gitignored):
 
-## Learn More
+    ```
+    VITE_OPENWEATHER_API_KEY=your_key_here
+    ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Restart the dev server.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Without a key the app shows setup instructions instead of failing.
 
-### Code Splitting
+> **Security note:** variables prefixed `VITE_` are embedded in the JavaScript bundle at build time. Anyone can read the key from a deployed site, so it is **not a secret**. That is inherent to a frontend-only app. Use a free-tier key, monitor its usage in your OpenWeather dashboard, and rotate it if it's abused. Never commit it.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## API usage and plan requirements
 
-### Analyzing the Bundle Size
+All endpoints used are included in OpenWeather's **free** plan:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+| Endpoint                      | Used for                                           |
+| ----------------------------- | -------------------------------------------------- |
+| `GET /data/2.5/weather`       | Current conditions, sunrise/sunset, UTC offset     |
+| `GET /data/2.5/forecast`      | 5-day / 3-hour forecast (hourly strip, daily list) |
+| `GET /data/2.5/air_pollution` | Current air quality                                |
+| `GET /geo/1.0/direct`         | Search suggestions                                 |
+| `GET /geo/1.0/reverse`        | Naming your current location                       |
 
-### Making a Progressive Web App
+A typical search costs 3 calls. Results are cached in memory for 10 minutes (OpenWeather's own update interval). Suggestions are debounced (350 ms, min. 3 characters) and cached. Superseded requests are aborted. The free tier allows 60 calls/minute.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+### Known limitations
 
-### Advanced Configuration
+- **No UV index, and no true hourly or daily forecasts.** Those come from One Call 3.0, which needs a separate “One Call by Call” subscription; the free key returns `401` for it. The hourly strip therefore uses 3-hour steps, and daily highs/lows are aggregated from 3-hour slots. They can differ slightly from a station's true daily extremes, and the last day may be partial.
+- **Today's high/low** combines the current reading with today's remaining forecast slots. OpenWeather's current `temp_min/temp_max` fields describe the spread across a city's stations right now, not the day's range, so they're not used.
+- **Local times** use OpenWeather's fixed UTC offset for each location. These are correct for the current moment, but a forecast that crosses a daylight-saving change may be off by an hour around the switch.
+- Search suggestions depend on OpenWeather's geocoder, which sometimes ranks smaller places first; free-text Enter search uses the weather endpoint's own city matching.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## Scripts
 
-### Deployment
+| Command              | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| `npm run dev`        | Start the dev server on port 3000              |
+| `npm run build`      | Type-check and build to `dist/`                |
+| `npm run preview`    | Serve the production build locally             |
+| `npm test`           | Run unit and integration tests (Vitest)        |
+| `npm run test:watch` | Tests in watch mode                            |
+| `npm run lint`       | ESLint                                         |
+| `npm run typecheck`  | TypeScript project check                       |
+| `npm run format`     | Format with Prettier (`format:check` verifies) |
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+The build output in `dist/` is static and can be deployed to any static host (Netlify, Vercel, GitHub Pages, S3…). Set `VITE_OPENWEATHER_API_KEY` in the host's build environment.
 
-### `npm run build` fails to minify
+## Design
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The visual direction ("the weather poster", Swiss / International Typographic Style) is written down in [`DESIGN.md`](DESIGN.md), and the tokens are in `src/styles/tokens.css`. Read both before changing UI. The typeface (Archivo, variable weight and width) is self-hosted via `@fontsource-variable`, so the app makes no third-party font requests. The favicon and app icons are in `public/`.
+
+## Project structure
+
+```
+src/
+  api/          OpenWeather client (errors, cancellation) and raw response types
+  lib/          normalisation, condition mapping, formatting/units, insights, storage
+  hooks/        useWeather (stale-response protection + cache), useStoredState, useNow
+  components/   UI: SearchBar, CurrentHero, HourlyForecast, DailyForecast, Details,
+                PlacesBar, WeatherIcon, Backdrop, States
+  styles/       design tokens and global primitives
+  test/         test setup and fixtures modelled on real API responses
+```
+
+Components only consume normalised types (`lib/types.ts`). All values are stored in metric units and converted at display time.
