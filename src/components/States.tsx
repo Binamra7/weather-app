@@ -82,7 +82,28 @@ export function Welcome({
     );
 }
 
-export function SetupRequired() {
+/**
+ * Shown when no API key was configured at build time. In development it explains the local setup;
+ * in a production build visitors get a plain "unavailable" message, and the site owner gets a
+ * short note about the hosting environment variable (no local-only instructions).
+ */
+export function SetupRequired({ production = import.meta.env.PROD }: { production?: boolean }) {
+    if (production) {
+        return (
+            <section className="state" aria-labelledby="setup-title">
+                <h1 id="setup-title" className="state__title state__title--small">
+                    Weather is temporarily unavailable
+                </h1>
+                <p className="state__text">
+                    This copy of Skycast isn&rsquo;t connected to its weather data source yet. Please check back soon.
+                </p>
+                <p className="state__text state__text--small">
+                    Site owner: set <code>VITE_OPENWEATHER_API_KEY</code> in your hosting provider&rsquo;s environment
+                    variables, then redeploy. The key is read at build time.
+                </p>
+            </section>
+        );
+    }
     return (
         <section className="state" aria-labelledby="setup-title">
             <h1 id="setup-title" className="state__title state__title--small">

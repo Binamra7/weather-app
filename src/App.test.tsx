@@ -2,6 +2,7 @@ import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { SetupRequired } from './components/States';
 import { clearWeatherCache } from './hooks/useWeather';
 import { rawAir, rawCurrent, rawForecast } from './test/fixtures';
 
@@ -59,10 +60,17 @@ afterEach(() => {
 
 describe('App', () => {
     it('shows setup instructions when no API key is configured', () => {
+        // Vitest runs with import.meta.env.PROD = false, so this is the development variant.
         vi.stubEnv('VITE_OPENWEATHER_API_KEY', '');
         render(<App />);
         expect(screen.getByRole('heading', { name: /add your openweather api key/i })).toBeInTheDocument();
         expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    });
+
+    it('shows visitors a plain unavailable message in a production build without a key', () => {
+        render(<SetupRequired production />);
+        expect(screen.getByRole('heading', { name: /weather is temporarily unavailable/i })).toBeInTheDocument();
+        expect(screen.queryByText(/\.env\.local/)).not.toBeInTheDocument();
     });
 
     it('starts on a welcome screen without requesting location', () => {

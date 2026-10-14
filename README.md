@@ -218,7 +218,7 @@ The full system lives in [`DESIGN.md`](DESIGN.md), and the tokens are in [`src/s
 npm test
 ```
 
-50 tests cover:
+The suite covers:
 
 - unit formatting and timezone handling
 - condition mapping and the daily aggregation
