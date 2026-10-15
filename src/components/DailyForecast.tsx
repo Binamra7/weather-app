@@ -7,13 +7,15 @@ import { rampColor } from '../lib/tempColor';
 
 interface Props {
     forecast: Forecast;
+    /** Where the forecast comes from, shown under the table. */
+    note: string;
     units: Units;
     /** Today's full range (includes the current reading), used for the first row. */
     todayRange: { min: number; max: number } | null;
     nowSec: number;
 }
 
-export function DailyForecast({ forecast, units, todayRange, nowSec }: Props) {
+export function DailyForecast({ forecast, note, units, todayRange, nowSec }: Props) {
     const today = localDateKey(nowSec, forecast.timezone);
     const days: Day[] = forecast.daily.map(d =>
         d.date === today && todayRange ? { ...d, min: todayRange.min, max: todayRange.max } : d
@@ -79,9 +81,7 @@ export function DailyForecast({ forecast, units, todayRange, nowSec }: Props) {
                     })}
                 </tbody>
             </table>
-            <p className="footnote">
-                Built from OpenWeather’s free 5-day / 3-hour forecast; the last day may be partial.
-            </p>
+            <p className="footnote">{note}</p>
         </section>
     );
 }

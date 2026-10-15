@@ -13,7 +13,7 @@ a 36-hour meteogram, a 5-day outlook, daylight and air quality, all in the locat
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-1a1712?style=flat-square&logo=typescript&logoColor=3178C6)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-8-1a1712?style=flat-square&logo=vite&logoColor=FFD62E)](https://vite.dev)
 [![Vitest](https://img.shields.io/badge/tested_with-Vitest-1a1712?style=flat-square&logo=vitest&logoColor=FCC72B)](https://vitest.dev)
-[![OpenWeather](https://img.shields.io/badge/data-OpenWeather_free_tier-1a1712?style=flat-square&logo=openstreetmap&logoColor=EB6E4B)](https://openweathermap.org/api)
+[![Open-Meteo](https://img.shields.io/badge/data-Open--Meteo_or_OpenWeather-1a1712?style=flat-square&logo=openstreetmap&logoColor=EB6E4B)](https://open-meteo.com/)
 [![No backend](https://img.shields.io/badge/backend-none-1a1712?style=flat-square)](#how-it-works)
 
 [Screenshots](#screenshots) · [Features](#features) · [Getting started](#getting-started) · [How it works](#how-it-works) · [Design](#design)
@@ -125,23 +125,25 @@ All screenshots use live OpenWeather data, captured on 14 October 2026.
 
 ## Getting started
 
-You need Node.js 20.19+ (or 22.12+) and a free [OpenWeather API key](https://home.openweathermap.org/api_keys).
+You need Node.js 20.19+ (or 22.12+). The default data source, [Open-Meteo](https://open-meteo.com/), needs no API key.
 
 ```bash
 git clone https://github.com/Binamra7/weather-app.git
 cd weather-app
 npm install
-cp .env.example .env.local    # then paste your key into .env.local
 npm run dev                   # http://localhost:3000
 ```
 
+To use OpenWeather instead, copy `.env.example` to `.env.local` and set:
+
 ```dotenv
 # .env.local
-VITE_OPENWEATHER_API_KEY=your_key_here
+VITE_WEATHER_PROVIDER=openweather
+VITE_OPENWEATHER_API_KEY=your_key_here    # https://home.openweathermap.org/api_keys
 ```
 
 > [!NOTE]
-> `VITE_*` variables are embedded in the JavaScript bundle at build time, so a deployed key is readable by anyone. That's unavoidable in a frontend-only app. Use a free-tier key, watch its usage, and never commit it. New keys can take a couple of hours to activate. Without a key, the app shows setup instructions instead of failing.
+> `VITE_*` variables are embedded in the JavaScript bundle at build time, so a deployed key is readable by anyone. That's unavoidable in a frontend-only app. Use a free-tier key, watch its usage, and never commit it. New keys can take a couple of hours to activate. With OpenWeather selected and no key, the app shows setup instructions instead of failing.
 
 <details>
 <summary><b>Scripts</b></summary>
@@ -164,13 +166,22 @@ VITE_OPENWEATHER_API_KEY=your_key_here
 <summary><b>Deploying</b></summary>
 <br />
 
-`npm run build` produces a static site in `dist/` that any static host can serve (Vercel, Netlify, GitHub Pages, Cloudflare Pages, S3). Set `VITE_OPENWEATHER_API_KEY` in the host's build environment. On Vercel, use the **Vite** framework preset (build command `npm run build`, output directory `dist`).
+`npm run build` produces a static site in `dist/` that any static host can serve (Vercel, Netlify, GitHub Pages, Cloudflare Pages, S3). No environment variables are needed for the default provider; for OpenWeather, set `VITE_WEATHER_PROVIDER=openweather` and `VITE_OPENWEATHER_API_KEY` in the host's build environment. On Vercel, use the **Vite** framework preset (build command `npm run build`, output directory `dist`).
 
 </details>
 
 ## How it works
 
-Skycast is entirely client-side. The browser calls OpenWeather directly, and every endpoint used is on the **free plan**:
+Skycast is entirely client-side: the browser calls the weather provider directly. Providers are interchangeable. Each one implements the `WeatherProvider` interface (`src/api/provider.ts`) and converts its responses into the app's own types, and `src/api/weather.ts` picks one from `VITE_WEATHER_PROVIDER`:
+
+| Provider                 | Key  | Endpoints                                                                                           |
+| ------------------------ | ---- | --------------------------------------------------------------------------------------------------- |
+| `open-meteo` _(default)_ | none | forecast (current, hourly, daily), air quality, geocoding; BigDataCloud names your current location |
+| `openweather`            | yes  | the free-plan endpoints below                                                                       |
+
+Open-Meteo is free for non-commercial use (no ads or subscriptions), up to 10,000 calls a day, with attribution. Its hourly forecast is grouped into the same 3-hour slots the UI uses.
+
+OpenWeather endpoints, all on the **free plan**:
 
 | Endpoint                      | Used for                                                    |
 | ----------------------------- | ----------------------------------------------------------- |
@@ -184,7 +195,7 @@ A search costs three requests: current conditions first, then the forecast and a
 
 ```
 src/
-  api/          OpenWeather client: typed errors, cancellation, raw response types
+  api/          provider interface and selection, Open-Meteo and OpenWeather clients, typed errors, raw response types
   lib/          normalisation, condition → palette mapping, units and time formatting, insights, storage
   hooks/        useWeather (stale-response protection + cache), useStoredState, useNow, useElementWidth
   components/   CurrentHero (the poster), HourlyForecast (meteogram), DailyForecast, Details,
@@ -227,6 +238,7 @@ The suite covers:
 
 ## Acknowledgements
 
-- Weather, forecast, air-quality and geocoding data by [OpenWeather](https://openweathermap.org/)
+- Weather, forecast, air-quality and geocoding data by [Open-Meteo](https://open-meteo.com/) (CC BY 4.0) or [OpenWeather](https://openweathermap.org/)
+- Current-location names by [BigDataCloud](https://www.bigdatacloud.com/)
 - [Archivo](https://github.com/Omnibus-Type/Archivo) by Omnibus-Type, under the SIL Open Font License
 - Visual approach informed by Dark Sky's meteogram ideas and the Swiss / International Typographic Style

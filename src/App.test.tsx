@@ -50,6 +50,8 @@ async function search(user: ReturnType<typeof userEvent.setup>, text: string) {
 }
 
 beforeEach(() => {
+    // These tests drive the app through mocked OpenWeather endpoints; Open-Meteo has its own tests.
+    vi.stubEnv('VITE_WEATHER_PROVIDER', 'openweather');
     vi.stubEnv('VITE_OPENWEATHER_API_KEY', 'test-key');
     clearWeatherCache();
 });
@@ -65,6 +67,14 @@ describe('App', () => {
         render(<App />);
         expect(screen.getByRole('heading', { name: /add your openweather api key/i })).toBeInTheDocument();
         expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+    });
+
+    it('works without any key on the default provider (Open-Meteo)', () => {
+        vi.stubEnv('VITE_WEATHER_PROVIDER', '');
+        vi.stubEnv('VITE_OPENWEATHER_API_KEY', '');
+        render(<App />);
+        expect(screen.getByRole('heading', { name: /check the sky/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Open-Meteo' })).toHaveAttribute('href', 'https://open-meteo.com/');
     });
 
     it('shows visitors a plain unavailable message in a production build without a key', () => {

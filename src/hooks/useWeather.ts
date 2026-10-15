@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchWeatherBundle, isAbortError, WeatherApiError, type WeatherTarget } from '../api/openWeather';
+import { getProvider, isAbortError, WeatherApiError, type WeatherTarget } from '../api/weather';
 import type { WeatherBundle } from '../lib/types';
 
-/** OpenWeather refreshes its data roughly every 10 minutes; don't re-request more often. */
+/** Providers refresh current conditions every 10–15 minutes; don't re-request more often. */
 export const CACHE_TTL_MS = 10 * 60 * 1000;
 
 export interface WeatherState {
@@ -67,7 +67,7 @@ export function useWeather() {
             setState(s => ({ ...s, error: null, isLoading: true }));
 
             try {
-                const data = await fetchWeatherBundle(target, controller.signal);
+                const data = await getProvider().fetchWeatherBundle(target, controller.signal);
                 if (seq !== seqRef.current) return null;
                 cache.set(data.place.id, data);
                 if (target.kind === 'query') queryIndex.set(target.query.trim().toLowerCase(), data.place.id);

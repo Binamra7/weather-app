@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { WeatherApiError } from '../api/openWeather';
+import type { WeatherApiError } from '../api/weather';
 import type { Place } from '../lib/types';
 import { AlertIcon, CloseIcon, LocateIcon } from './Icons';
 import './States.css';

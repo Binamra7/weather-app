@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getApiKey, reverseGeocode, type WeatherTarget } from './api/openWeather';
+import { getProvider, type WeatherTarget } from './api/weather';
 import { Backdrop } from './components/Backdrop';
 import { CurrentHero } from './components/CurrentHero';
 import { DailyForecast } from './components/DailyForecast';
@@ -43,14 +43,15 @@ export default function App() {
     const [locating, setLocating] = useState(false);
     // Restore the last viewed place on load (geolocation is never requested automatically).
     const [initialTarget] = useState<WeatherTarget | null>(() =>
-        getApiKey() && lastPlace ? { kind: 'place', place: lastPlace } : null
+        getProvider().isConfigured() && lastPlace ? { kind: 'place', place: lastPlace } : null
     );
     const [lastTarget, setLastTarget] = useState<WeatherTarget | null>(initialTarget);
 
     const { data, error, isLoading, load, dismissError } = useWeather();
     const nowMs = useNow(30_000);
     const nowSec = Math.floor(nowMs / 1000);
-    const hasKey = Boolean(getApiKey());
+    const provider = getProvider();
+    const configured = provider.isConfigured();
     const { units, timeFormat } = prefs;
 
     const show = useCallback(
@@ -105,7 +106,7 @@ export default function App() {
                     lon,
                 };
                 try {
-                    place = (await reverseGeocode(lat, lon)) ?? place;
+                    place = (await getProvider().reverseGeocode(lat, lon)) ?? place;
                 } catch {
                     // Fall back to the name returned by the weather endpoint.
                 }
@@ -151,9 +152,7 @@ export default function App() {
         : localHour >= 6 && localHour < 18
           ? 'clear-day'
           : 'clear-night';
-    const conditionId = data?.current.condition.id ?? 0;
-    const intensity =
-        (conditionId >= 300 && conditionId < 400) || conditionId === 500 || conditionId === 520 ? 'light' : 'normal';
+    const intensity = data?.current.condition.intensity ?? 'normal';
 
     useEffect(() => {
         const root = document.documentElement;
@@ -165,7 +164,7 @@ export default function App() {
     const retry = lastTarget ? () => void show(lastTarget, { force: true }) : undefined;
 
     let body;
-    if (!hasKey) {
+    if (!configured) {
         body = <SetupRequired />;
     } else if (data) {
         body = (
@@ -212,7 +211,13 @@ export default function App() {
                 <div className="dashboard__col">
                     {data.forecast && (
                         <div className="area-daily">
-                            <DailyForecast forecast={data.forecast} units={units} todayRange={range} nowSec={nowSec} />
+                            <DailyForecast
+                                note={provider.forecastNote}
+                                forecast={data.forecast}
+                                units={units}
+                                todayRange={range}
+                                nowSec={nowSec}
+                            />
                         </div>
                     )}
                     <div className="area-sun">
@@ -308,7 +313,7 @@ export default function App() {
                             °
                         </span>
                     </a>
-                    {hasKey && (
+                    {configured && (
                         <div className="topbar__search">
                             <SearchBar
                                 onSelectPlace={place => void show({ kind: 'place', place })}
@@ -319,7 +324,7 @@ export default function App() {
                         </div>
                     )}
                     <div className="topbar__actions">
-                        {hasKey && (
+                        {configured && (
                             <button
                                 type="button"
                                 className="link-btn topbar__locate"
@@ -336,7 +341,7 @@ export default function App() {
                     </div>
                 </header>
 
-                {hasKey && (
+                {configured && (
                     <PlacesBar
                         favorites={favorites}
                         recents={recents}
@@ -362,8 +367,7 @@ export default function App() {
 
                 <footer className="footer">
                     <p>
-                        Weather data by <a href="https://openweathermap.org/">OpenWeather</a> · times are local to each
-                        location
+                        Weather data by <a href={provider.url}>{provider.name}</a> · times are local to each location
                     </p>
                 </footer>
             </div>

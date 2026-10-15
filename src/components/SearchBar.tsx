@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { isAbortError, searchPlaces } from '../api/openWeather';
+import { getProvider, isAbortError } from '../api/weather';
 import { placeSubtitle } from '../lib/format';
 import type { Place } from '../lib/types';
 import { HistoryIcon, PinIcon, SearchIcon } from './Icons';
@@ -46,7 +46,7 @@ export function SearchBar({ onSelectPlace, onSubmitQuery, recents, busy }: Props
         const timer = window.setTimeout(async () => {
             setPendingQuery(key);
             try {
-                suggestionCache.set(key, await searchPlaces(key, controller.signal));
+                suggestionCache.set(key, await getProvider().searchPlaces(key, controller.signal));
             } catch (e) {
                 // Suggestions are a convenience; a failure here should not block searching.
                 if (isAbortError(e)) return;

@@ -1,7 +1,7 @@
 /**
- * Normalized, app-facing weather types. Raw OpenWeather payloads are typed in
- * `src/api/openWeatherTypes.ts` and converted into these shapes in `normalize.ts`,
- * so components never touch the raw API response.
+ * Normalized, app-facing weather types. Each provider types its raw payloads in `src/api/`
+ * and converts them into these shapes (`normalize.ts` for OpenWeather, `normalizeOpenMeteo.ts`
+ * for Open-Meteo), so components never touch a raw API response or know which provider is active.
  *
  * All temperatures are stored in °C, speeds in m/s, distances in metres and
  * precipitation in mm. Unit conversion happens only at display time (format.ts).
@@ -36,13 +36,15 @@ export type ConditionKind =
     | 'wind';
 
 export interface Condition {
-    /** OpenWeather condition code, e.g. 500. */
+    /** Provider-specific condition code (OpenWeather 500, WMO 61, …). Only meaningful to its provider. */
     id: number;
-    /** OpenWeather group, e.g. "Rain". */
+    /** Group, e.g. "Rain". */
     main: string;
     /** Human readable description, e.g. "light rain". */
     description: string;
     kind: ConditionKind;
+    /** Light precipitation draws a sparser backdrop. */
+    intensity: 'light' | 'normal';
     isDay: boolean;
 }
 
@@ -74,7 +76,7 @@ export interface ForecastPoint {
     windSpeed: number;
     /** Probability of precipitation, 0–1. */
     pop: number;
-    /** Rain + snow volume for the 3h slot, mm. */
+    /** Points are 3-hour slots. Rain + snow volume for the slot, mm. */
     precip: number;
     condition: Condition;
 }
@@ -98,7 +100,7 @@ export interface Forecast {
 }
 
 export interface AirQuality {
-    /** OpenWeather AQI, 1 (good) – 5 (very poor). */
+    /** European-style AQI band, 1 (good) – 5 (very poor). */
     aqi: 1 | 2 | 3 | 4 | 5;
     pm2_5: number | null;
     pm10: number | null;
