@@ -35,11 +35,14 @@ function PlaceButton({
     );
 }
 
-/** Quick access to saved and recently viewed places, as a compact line of text links. */
+/**
+ * Quick access to saved and recently viewed places, as a compact line of text links. With no
+ * places it still holds one empty row, so clearing recents doesn't pull the page up.
+ */
 export function PlacesBar({ favorites, recents, currentId, onSelect, onRemoveFavorite, onClearRecents }: Props) {
     const favIds = new Set(favorites.map(f => f.id));
     const recentOnly = recents.filter(r => !favIds.has(r.id)).slice(0, 6);
-    if (!favorites.length && !recentOnly.length) return null;
+    if (!favorites.length && !recentOnly.length) return <div className="places" aria-hidden="true" />;
 
     return (
         <nav className="places" aria-label="Saved and recent places">

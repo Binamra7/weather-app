@@ -3,6 +3,8 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: 0 var(--sp-8);
+    /* One row of place links, reserved even when empty. */
+    min-height: 32px;
     font-size: var(--fs-15);
 }
 
