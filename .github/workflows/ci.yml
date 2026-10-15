@@ -1,0 +1,31 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+permissions:
+    contents: read
+
+# A newer push to the same branch or PR supersedes the running check.
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 22
+                  cache: npm
+            - run: npm ci
+            - run: npm run format:check
+            - run: npm run lint
+            - run: npm test
+            # Type-checks (tsc -b) and builds, so a separate typecheck step isn't needed.
+            - run: npm run build
